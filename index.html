@@ -1,0 +1,387 @@
+<!DOCTYPE HTML>
+<!--
+	Story by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>CS194-26 Project 3</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper" class="divided">
+
+				<!-- Face Morphing -->
+					<section class="banner style1 orient-left content-align-left image-position-right fullscreen onload-image-fade-in onload-content-fade-right">
+						<div class="content">
+							<h1>Face Morphing</h1>
+
+							<p class="major">Varun Neal Srivastava</p>
+						</div>
+						<div class="image">
+							<img src="out/varsha_triangles.jpeg" alt="" />
+						</div>
+					</section>
+
+				<!-- Part 1: Defining Correspondences -->
+					<section class="wrapper style1">
+						<div class="inner">
+							<h2>Part 1: Defining Correspondences</h2>
+							<p>Faces were labeled with 46 or 54 keypoints. The 46 keypoint labeling followed
+								the same system employed by the
+								<a href="https://fei.edu.br/~cet/facedatabase.html">FEI dataset</a>.
+								Additionally, a 54-keypoint labelling was employed for faces that had glasses,
+								e.g. with 8 points corresponding to the borders of glasses.
+								<br>
+								A triangulation was selected for these keypoints using the Delaunay technique.
+								<br>
+								Finally, four additional "border" keypoints were added to every image at the
+								four corners of the image, by default.
+								<br>
+								Below is a sample of a 46 keypoint and 54 keypoint triangulation (on images of
+								my mom and myself, respectively).
+							</p>
+						</div>
+
+						<!-- Gallery -->
+							<div class="gallery style1 medium">
+								<article>
+									<a href="out/seema_triangles.jpeg" class="image">
+										<img src="out/seema_triangles.jpeg" alt="" />
+									</a>
+									<div class="caption">
+										<h3>46 point triangulation. </h3>
+									</div>
+								</article>
+								<article>
+									<a href="out/varun_triangles.jpeg" class="image">
+										<img src="out/varun_triangles.jpeg" alt="" />
+									</a>
+									<div class="caption">
+										<h3>54 point triangulation. </h3>
+									</div>
+								</article>
+							</div>
+
+					</section>
+
+				<!-- Part 2: Computing "Mid-Way" Faces -->
+					<section class="wrapper style1">
+						<div class="inner">
+							<h2>Part 2: Computing "Mid-Way" Faces</h2>
+							<p>Using keypoints, we can find the keypoint average of two faces. From there, we can
+							linearly morph the triangulation of one image to the triangulation of the average
+							of the average image. By applying this process twice to two images, and then cross-blending
+							their result, we can achieve a sort of "mid-way" face between two faces.
+							<br> Below is an example of this on my mom and my sister</p>
+						</div>
+
+						<!-- Gallery -->
+							<div class="gallery style2 small">
+								<article>
+									<a href="lib/seema.jpeg" class="image">
+										<img src="lib/seema.jpeg" alt="" />
+									</a>
+									<div class="caption">
+										<h3>My dear mother. </h3>
+									</div>
+								</article>
+								<article>
+									<a href="lib/varsha.jpeg" class="image">
+										<img src="lib/varsha.jpeg" alt="" />
+									</a>
+									<div class="caption">
+										<h3>My elder sister. </h3>
+									</div>
+								</article>
+								<article>
+									<a href="out/seema2avg.jpeg" class="image">
+										<img src="out/seema2avg.jpeg" alt="" />
+									</a>
+									<div class="caption">
+										<h3>My mother's face morphed to the average face shape of her and my sister. </h3>
+									</div>
+								</article>
+								<article>
+									<a href="out/varsha2avg.jpeg" class="image">
+										<img src="out/varsha2avg.jpeg" alt="" />
+									</a>
+									<div class="caption">
+										<h3>My sister's face morphed to the average face shape of her and my mother. </h3>
+									</div>
+								</article>
+								<article>
+									<a href="out/seemavarsha.jpeg" class="image">
+										<img src="out/seemavarsha.jpeg" alt="" />
+									</a>
+									<div class="caption">
+										<h3>The mid-way face of my sister and mom. </h3>
+									</div>
+								</article>
+
+							</div>
+						<div class="inner">
+							<p>It is very clear that this mid-way is full of artifacts. Part of this is due to the fact that
+							parts of a morph must be interpolaed. This is because the codomain of the triangulation is
+							not necessarily the domain of the image.
+							<br> Moreover, the interpolation technique used here is simply matching the nearest pixel,
+								which is incredibly naive and thus imperfect. This can cause blurring and other warping,
+								which will be seen in detail in the next few parts.</p>
+						</div>
+					</section>
+
+				<br><br>
+
+				<!-- Part 3: Morphs -->
+					<section class="wrapper style1">
+						<div class="inner">
+							<h2>Part 3: Morphs</h2>
+							<p>Imagine instead of finding the average face between two faces, we find the
+								weighted average, with weight 0 <= t <= 1. By parameterizing t, we can smoothly transition
+								across the spectrum of faces.
+								<br> Below is several examples of such parameterization (in gif format).
+							</p>
+						</div>
+
+						<!-- Gallery -->
+							<div class="gallery style2 medium">
+								<article>
+									<a href="out/varsha2seema.gif" class="image">
+										<img src="out/varsha2seema.gif" alt="" />
+									</a>
+									<div class="caption">
+										<h3>My sister morphing into my mom. </h3>
+									</div>
+								</article>
+								<article>
+									<a href="out/varun2amit.gif" class="image">
+										<img src="out/varun2amit.gif" alt="" />
+									</a>
+									<div class="caption">
+										<h3>Me morphing into my dad. </h3>
+									</div>
+								</article>
+								<article>
+									<a href="out/eva2varun2.gif" class="image">
+										<img src="out/eva2varun2.gif" alt="" />
+									</a>
+									<div class="caption">
+										<h3>My girlfriend morphing into me. </h3>
+									</div>
+								</article>
+								<article>
+									<a href="out/sophia2michael.gif" class="image">
+										<img src="out/sophia2michael.gif" alt="" />
+									</a>
+									<div class="caption">
+										<h3>Sophia morphing into Michael Cera. </h3>
+									</div>
+								</article>
+							</div>
+					<div class="inner">
+							<p>It is worth noting the image quality is a poor here. Moreover, we are really starting
+							to see major artifacts created by our nearest-interpolation. Using a stronger interpolation
+							technique as well as larger images would definitely help the quality. More precisely picking
+							our keypoints would also smooth some transitions.</p>
+					</div>
+
+
+					</section>
+
+
+				<!-- Part 4: Mean Smiley Faces -->
+					<section class="wrapper style1 ">
+						<div class="inner">
+							<h2>Part 4: Mean Smiley Faces</h2>
+							<p>100 grayscale images of smiling individuals was obtained from the FEI dataset indicated above.
+							In this part, we <br>
+							1) find the average face shape of these smiling individuals <br>
+							2) morph each face in the dataset to match this average face shape <br>
+							3) take the average of all the morphed faces to achieve the average smiling face.<br>
+							The keypoints were provided to us by the dataset.</p>
+						</div>
+
+						<!-- Gallery -->
+							<div class="gallery style2 small">
+								<article>
+									<a href="lib/smiling_faces/1b.jpg" class="image">
+										<img src="lib/smiling_faces/1b.jpg" alt="" />
+									</a>
+									<div class="caption">
+										<h3>Person 1 before morph. </h3>
+									</div>
+								</article>
+								<article>
+									<a href="out/1b2avg.jpeg" class="image">
+										<img src="out/1b2avg.jpeg" alt="" />
+									</a>
+									<div class="caption">
+										<h3>Person 1 after morph. </h3>
+									</div>
+								</article>
+
+								<article>
+									<a href="lib/smiling_faces/10b.jpg" class="image">
+										<img src="lib/smiling_faces/10b.jpg" alt="" />
+									</a>
+									<div class="caption">
+										<h3>Person 10 before morph. </h3>
+									</div>
+								</article>
+								<article>
+									<a href="out/10b2avg.jpeg" class="image">
+										<img src="out/10b2avg.jpeg" alt="" />
+									</a>
+									<div class="caption">
+										<h3>Person 10 after morph. </h3>
+									</div>
+								</article>
+
+								<article>
+									<a href="lib/smiling_faces/100b.jpg" class="image">
+										<img src="lib/smiling_faces/100b.jpg" alt="" />
+									</a>
+									<div class="caption">
+										<h3>Person 100 before morph. </h3>
+									</div>
+								</article>
+								<article>
+									<a href="out/100b2avg.jpeg" class="image">
+										<img src="out/100b2avg.jpeg" alt="" />
+									</a>
+									<div class="caption">
+										<h3>Person 100 after morph. </h3>
+									</div>
+								</article>
+
+								<article>
+									<a href="out/smile_face.jpeg" class="image">
+										<img src="out/smile_face.jpeg" alt="" />
+									</a>
+									<div class="caption">
+										<h3>The Smile Creature. </h3>
+									</div>
+								</article>
+							</div>
+
+						<div class="inner">
+								<p>With this data, we now have the geometry of a smiling face. Using this, I warped
+								my own face to match the geometry of the average smiling face, and then I additionally
+								warped the average smiling face to match the geometry of my face:</p>
+						</div>
+
+						<!-- Gallery -->
+						<div class="gallery style1 medium">
+							<article>
+								<a href="lib/varuns.jpeg" class="image">
+									<img src="lib/varuns.jpeg" alt="" />
+								</a>
+								<div class="caption">
+									<h3>My face. </h3>
+								</div>
+							</article>
+							<article>
+								<a href="out/smile_face.jpeg" class="image">
+									<img src="out/smile_face.jpeg" alt="" />
+								</a>
+								<div class="caption">
+									<h3>Original smiley face. </h3>
+								</div>
+							</article>
+							<article>
+								<a href="out/varun2smile.jpeg" class="image">
+									<img src="out/varun2smile.jpeg" alt="" />
+								</a>
+								<div class="caption">
+									<h3>My face warped to smile more. </h3>
+								</div>
+							</article>
+							<article>
+								<a href="out/smile2varun.jpeg" class="image">
+									<img src="out/smile2varun.jpeg" alt="" />
+								</a>
+								<div class="caption">
+									<h3>The Smile Creature taking my form. </h3>
+								</div>
+							</article>
+						</div>
+
+						<div class="inner">
+								<p>Clearly something has gone deeply ary. There are a few issues that caused the
+								monstrosities pictured above. Primarily, every image in the smiling dataset
+								was facing forward, whereas in my image I am facing toward my right.
+								<br> My glasses, are, of course, not captured by the key-points
+								and are thus warped quite awkwardly.
+								<br> Additionally, some of my keypoints are seemingly mis-aligned,
+								causing some dilation of my face.</p>
+						</div>
+
+					</section>
+
+				<!-- Part 5: Caricatures -->
+				<section class="spotlight style1 orient-left content-align-right image-position-center onscroll-image-fade-in" id="first">
+						<div class="content">
+							<h2>Part 5: Caricatures</h2>
+							<p> One could define my individual traits as the way my face differs from the mean face; e.g.
+								the variance of my face. In this way, we can produce a caricature of my face by
+								morphing my face to a face shape that more "my-face" than my actual face. In practice,
+								this caricature face shape is the difference of my face shape and the mean face shape,
+								added to my existing face shape. The picture to the left illustrates this, where the mean
+								uses the mean face shape from Part 4.
+						</div>
+						<div class="image">
+							<img src="out/varun_charicature.jpeg" alt="" />
+						</div>
+
+					</section>
+
+				<!-- Part 6: Bells and Whistles -->
+				<section class="spotlight style1 orient-right content-align-left image-position-center onscroll-image-fade-in" id="first">
+						<div class="content">
+							<h2>Part 6: Bells and Whistles</h2>
+							<p> For the bells and whistles section of this project I made a video devoted to the best
+								girls of neon gensis evangelion . please enjoy <br><br><br>
+								<a href="https://www.youtube.com/watch?v=yzauhADA0NU">https://www.youtube.com/watch?v=yzauhADA0NU</a>
+						</div>
+						<div class="image">
+							<img src="lib/rei2.jpeg" alt="" />
+						</div>
+
+					</section>
+
+				<!-- Conclusion -->
+					<section class="spotlight style1 orient-left content-align-right image-position-center onscroll-image-fade-in" id="first">
+						<div class="content">
+							<h2>Conclusion</h2>
+							<p> I had a lot of fun making this project! I definitely wasted a lot of time just playing around
+								with morphs, but this actually helped me solve a lot of bugs and deepen my general understanding
+								of keypoints.
+
+								<br><br> Additionally, I used <a href="https://html5up.net/">HTML5 UP</a> to generate this website, which made it a lot
+								easier to format my HTML!</p>
+
+						</div>
+						<div class="image">
+							<img src="out/varun2avg0.jpeg" alt="" />
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
